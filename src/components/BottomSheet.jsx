@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const MESSAGES = [
   { id: 1, text: 'Hey Mick 👋' },
@@ -9,12 +9,7 @@ const MESSAGES = [
 
 function ChatBubble({ text, show }) {
   return (
-    <div style={{
-      transition: 'opacity .4s, transform .4s',
-      opacity: show ? 1 : 0,
-      transform: show ? 'translateY(0)' : 'translateY(10px)',
-      pointerEvents: show ? 'auto' : 'none',
-    }}>
+    <div style={{ transition:'opacity .4s,transform .4s', opacity:show?1:0, transform:show?'translateY(0)':'translateY(10px)', pointerEvents:show?'auto':'none' }}>
       <div className="bubble">{text}</div>
     </div>
   );
@@ -24,8 +19,7 @@ function RatingStars({ value, onChange }) {
   return (
     <div className="stars">
       {[1,2,3,4,5].map((n) => (
-        <button key={n} className={`star${value >= n ? ' filled' : ''}`}
-          onClick={() => onChange(n)} aria-label={`${n}`}>
+        <button key={n} className={`star${value >= n ? ' filled' : ''}`} onClick={() => onChange(n)}>
           💚
         </button>
       ))}
@@ -33,67 +27,38 @@ function RatingStars({ value, onChange }) {
   );
 }
 
-// Konfeti — berjalan terus selama komponen mounted
 function Confetti() {
-  const ref = useRef(null);
-  useEffect(() => {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-
-    function resize() {
-      canvas.width  = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    }
+    function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
     resize();
     window.addEventListener('resize', resize);
-
     const COLORS = ['#00b14f','#34d399','#6ee7b7','#fbbf24','#f472b6','#a78bfa','#ffffff','#fbcfe8'];
     const pieces = Array.from({ length: 100 }, () => ({
-      x:     Math.random() * canvas.width,
-      y:     Math.random() * -canvas.height,
-      w:     7 + Math.random() * 9,
-      h:     4 + Math.random() * 6,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      speed: 1.5 + Math.random() * 2.5,
-      angle: Math.random() * Math.PI * 2,
-      spin:  (Math.random() - .5) * .12,
-      drift: (Math.random() - .5) * 1,
+      x: Math.random()*canvas.width, y: Math.random()*-canvas.height,
+      w: 7+Math.random()*9, h: 4+Math.random()*6,
+      color: COLORS[Math.floor(Math.random()*COLORS.length)],
+      speed: 1.5+Math.random()*2.5, angle: Math.random()*Math.PI*2,
+      spin: (Math.random()-.5)*.12, drift: (Math.random()-.5)*1,
     }));
-
     let running = true;
-
     function draw() {
       if (!running) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
       pieces.forEach((p) => {
-        ctx.save();
-        ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
-        ctx.rotate(p.angle);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-        ctx.restore();
-        p.y     += p.speed;
-        p.x     += p.drift;
-        p.angle += p.spin;
-        // reset ke atas saat keluar bawah layar
-        if (p.y > canvas.height + p.h) {
-          p.y = -p.h * 2;
-          p.x = Math.random() * canvas.width;
-        }
+        ctx.save(); ctx.translate(p.x+p.w/2,p.y+p.h/2); ctx.rotate(p.angle);
+        ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+        p.y+=p.speed; p.x+=p.drift; p.angle+=p.spin;
+        if (p.y>canvas.height+p.h) { p.y=-p.h*2; p.x=Math.random()*canvas.width; }
       });
       requestAnimationFrame(draw);
     }
-
     draw();
-
-    // Bersihkan hanya saat komponen unmount — tidak ada setTimeout stop
-    return () => {
-      running = false;
-      window.removeEventListener('resize', resize);
-    };
+    return () => { running=false; window.removeEventListener('resize',resize); };
   }, []);
-
   return <canvas ref={ref} className="confetti-canvas" />;
 }
 
@@ -108,15 +73,10 @@ function LoveVoucher({ rating }) {
         </div>
       </div>
       <div className="voucher-divider">
-        <div className="notch left" />
-        <div className="dashes" />
-        <div className="notch right" />
+        <div className="notch left" /><div className="dashes" /><div className="notch right" />
       </div>
       <div className="voucher-body">
-        <p className="voucher-msg">
-          “Makasih ya Mick, udah mau nerima cinta aku.
-          Semoga hari kamu seindah senyum kamu.”
-        </p>
+        <p className="voucher-msg">“Makasih ya Mick, udah mau nerima cinta aku. Semoga hari kamu seindah senyum kamu.”</p>
         <ul className="voucher-terms">
           <li>✓ Satu pelukan gratis</li>
           <li>✓ Berlaku selamanya ∞</li>
@@ -133,16 +93,13 @@ function LoveVoucher({ rating }) {
 
 export default function BottomSheet({ phase, progress, onStart, onCancel, onAccept }) {
   const remaining = Math.max(0, Math.ceil(15 - progress * 15));
-
   const [chatOpen, setChatOpen]   = useState(false);
   const [shown, setShown]         = useState(0);
   const [rating, setRating]       = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    if (phase === 'idle') {
-      setChatOpen(false); setShown(0); setRating(0); setSubmitted(false);
-    }
+    if (phase === 'idle') { setChatOpen(false); setShown(0); setRating(0); setSubmitted(false); }
   }, [phase]);
 
   useEffect(() => {
@@ -165,14 +122,8 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     <section className="sheet">
       <div className="handle" />
       <label>CINTAKU DITEMUKAN</label>
-      <div className="head">
-        <h2>Menuju ke tempatmu</h2>
-        <div className="eta">{remaining}<small>detik lagi</small></div>
-      </div>
-      <div className="card">
-        <i className="avatar">💚</i>
-        <div><strong>Cintaku</strong><small>Perjalanan khusus untukmu</small></div>
-      </div>
+      <div className="head"><h2>Menuju ke tempatmu</h2><div className="eta">{remaining}<small>detik lagi</small></div></div>
+      <div className="card"><i className="avatar">💚</i><div><strong>Cintaku</strong><small>Perjalanan khusus untukmu</small></div></div>
       <div className="progress"><div style={{ width: progress * 100 + '%' }} /></div>
       <div className="summary"><span>Hatiku</span><span>Tempatmu</span></div>
       <button className="secondary" onClick={onCancel}>Batalkan perjalanan</button>
@@ -197,9 +148,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
         <div><strong>Cintaku</strong><small>Online • sekarang</small></div>
       </div>
       <div className="chat">
-        {MESSAGES.map((m, i) => (
-          <ChatBubble key={m.id} text={m.text} show={shown > i} />
-        ))}
+        {MESSAGES.map((m, i) => <ChatBubble key={m.id} text={m.text} show={shown > i} />)}
       </div>
       {shown >= MESSAGES.length && (
         <div className="rating-wrap">
