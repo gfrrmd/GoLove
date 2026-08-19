@@ -145,7 +145,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     <section className="sheet sheet--chat">
       <div className="chat-header">
         <div className="chat-avatar">💚</div>
-        <div><strong>Cintaku</strong><small>Online • sekarang</small></div>
+        <div><strong>Rama</strong><small>Online • sekarang</small></div>
       </div>
       <div className="chat">
         {MESSAGES.map((m, i) => <ChatBubble key={m.id} text={m.text} show={shown > i} />)}
