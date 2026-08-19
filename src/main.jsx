@@ -1,49 +1,92 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/global.css';
-import { START, END } from './data/route';
-import { interpolateLatLng } from './utils/animation';
+import { START } from './data/route';
+import { fetchRoute } from './utils/routing';
+import { interpolateRoute, remainingRoute } from './utils/animation';
 import MapView from './components/MapView';
 import BottomSheet from './components/BottomSheet';
 
 function App() {
-  const [phase, setPhase] = useState('idle');
-  const [progress, setProgress] = useState(0);
-  const [driverPos, setDriverPos] = useState(START);
+  const [phase, setPhase]         = useState('idle');
+  const [progress, setProgress]   = useState(0);
+  const [route, setRoute]         = useState(null);      // semua titik rute OSRM
+  const [pos, setPos]             = useState(START);     // posisi marker saat ini
+  const [remaining, setRemaining] = useState(null);      // sisa rute (memendek)
+  const [error, setError]         = useState('');
 
-  // Searching: 5 detik
+  // ─── Searching: fetch rute OSRM, lalu mulai tracking ───
   useEffect(() => {
     if (phase !== 'searching') return;
-    const t = setTimeout(() => setPhase('tracking'), 5000);
-    return () => clearTimeout(t);
+    let cancelled = false;
+
+    const timer = setTimeout(async () => {
+      try {
+        setError('');
+        const points = await fetchRoute();
+        if (cancelled) return;
+        setRoute(points);
+        setRemaining(points);   // mula-mula garis penuh
+        setPos(points[0]);
+        setPhase('tracking');
+      } catch (e) {
+        if (!cancelled) {
+          setError('Gagal mengambil rute. Coba lagi.');
+          setPhase('idle');
+        }
+      }
+    }, 5000);
+
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [phase]);
 
-  // Tracking: 10 detik
+  // ─── Tracking: animasi 10 detik, garis memendek ───
   useEffect(() => {
-    if (phase !== 'tracking') return;
-    setDriverPos(START);
-    const start = performance.now();
+    if (phase !== 'tracking' || !route?.length) return;
+
+    const startTime = performance.now();
     let id;
-    const animate = (now) => {
-      const p = Math.min((now - start) / 10000, 1);
-      setProgress(p);
-      setDriverPos(interpolateLatLng(START, END, p));
-      if (p < 1) id = requestAnimationFrame(animate);
+
+    function animate(now) {
+      const t = Math.min((now - startTime) / 10000, 1);
+      setProgress(t);
+      setPos(interpolateRoute(route, t));
+      setRemaining(remainingRoute(route, t));   // potong garis dari posisi sekarang
+
+      if (t < 1) id = requestAnimationFrame(animate);
       else setPhase('arrived');
-    };
+    }
+
     id = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(id);
-  }, [phase]);
+  }, [phase, route]);
+
+  function reset() {
+    setProgress(0);
+    setRoute(null);
+    setRemaining(null);
+    setPos(START);
+    setError('');
+  }
 
   return (
     <main className="app">
-      <MapView pos={driverPos} searching={phase === 'searching'} />
+      <MapView
+        pos={pos}
+        searching={phase === 'searching'}
+        route={route}
+        remaining={remaining}
+      />
+
       <div className="brand">♥ GoLove</div>
+
+      {error && <div className="toast">{error}</div>}
+
       <BottomSheet
         phase={phase}
         progress={progress}
-        onStart={() => { setProgress(0); setDriverPos(START); setPhase('searching'); }}
-        onCancel={() => { setProgress(0); setDriverPos(START); setPhase('idle'); }}
+        onStart={() => { reset(); setPhase('searching'); }}
+        onCancel={() => { reset(); setPhase('idle'); }}
         onAccept={() => setPhase('accepted')}
       />
     </main>
