@@ -6,7 +6,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
   if (phase === 'searching') return (
     <section className="sheet center">
       <div className="handle" />
-      <div className="radar">♥</div>
+      <div className="radar"><span className="radar-heart">♥</span></div>
       <h2>Mencari cintaku...</h2>
       <p>Sedang mencari jalan terbaik untuk mengantarkan rasa sayangmu.</p>
       <div className="dots">● ● ●</div>
@@ -19,7 +19,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
       <label>CINTAKU DITEMUKAN</label>
       <div className="head">
         <h2>Menuju ke tempatmu</h2>
-        <b className="eta">{remaining}<small> detik</small></b>
+        <div className="eta">{remaining}<small>detik lagi</small></div>
       </div>
       <div className="card">
         <i className="avatar">♥</i>
@@ -33,6 +33,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
 
   if (phase === 'arrived') return (
     <section className="sheet center">
+      <div className="handle" />
       <div className="success">♥</div>
       <label>PERJALANAN SELESAI</label>
       <h2>Cintaku sudah sampai 💖</h2>
@@ -43,6 +44,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
 
   if (phase === 'accepted') return (
     <section className="sheet center">
+      <div className="handle" />
       <div className="success">✓</div>
       <label>BERHASIL DITERIMA</label>
       <h2>Yeay, cintanya diterima!</h2>

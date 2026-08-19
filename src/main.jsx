@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/global.css';
 import { routePoints } from './data/route';
-import { interpolateRoute } from './utils/animation';
+import { interpolateRoute, getRotation } from './utils/animation';
 import MapView from './components/MapView';
 import BottomSheet from './components/BottomSheet';
 
@@ -30,14 +30,17 @@ function App() {
     return () => cancelAnimationFrame(id);
   }, [phase]);
 
-  const driverPos =
-    phase === 'idle' || phase === 'searching'
-      ? routePoints[0]
-      : interpolateRoute(routePoints, progress);
+  const driverPos = phase === 'idle' || phase === 'searching'
+    ? routePoints[0]
+    : interpolateRoute(routePoints, progress);
+
+  const rotation = phase === 'tracking'
+    ? getRotation(routePoints, progress)
+    : 0;
 
   return (
     <main className="app">
-      <MapView pos={driverPos} searching={phase === 'searching'} />
+      <MapView pos={driverPos} searching={phase === 'searching'} rotation={rotation} />
       <div className="brand">♥ GoLove</div>
       <BottomSheet
         phase={phase}
