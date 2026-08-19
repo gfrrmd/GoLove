@@ -1,47 +1,9 @@
-// viewBox 0 0 400 700
-export const routePoints = [
-  { x: 60,  y: 580 },
-  { x: 60,  y: 480 },
-  { x: 140, y: 480 },
-  { x: 140, y: 360 },
-  { x: 240, y: 360 },
-  { x: 240, y: 240 },
-  { x: 320, y: 240 },
-  { x: 320, y: 150 },
-];
+// Koordinat [lat, lng]
+export const START = [-6.215268, 106.817933]; // Hatiku
+export const END   = [-6.243009, 106.798404]; // Tempat dia berada
 
-export const mapRoads = [
-  // Horizontal
-  { points: [[0,150],[400,150]] },
-  { points: [[0,240],[400,240]] },
-  { points: [[0,360],[400,360]] },
-  { points: [[0,480],[400,480]] },
-  { points: [[0,580],[400,580]] },
-  // Vertikal
-  { points: [[60,0],[60,700]]   },
-  { points: [[140,0],[140,700]] },
-  { points: [[240,0],[240,700]] },
-  { points: [[320,0],[320,700]] },
-];
-
-export const blocks = [
-  // baris 1
-  { x:70,  y:160, w:60,  h:70 },
-  { x:150, y:160, w:80,  h:70 },
-  { x:250, y:160, w:60,  h:70 },
-  // baris 2
-  { x:70,  y:250, w:60,  h:100 },
-  { x:150, y:250, w:80,  h:100 },
-  { x:250, y:250, w:60,  h:100 },
-  { x:330, y:250, w:55,  h:100 },
-  // baris 3
-  { x:70,  y:370, w:60,  h:100 },
-  { x:150, y:370, w:80,  h:100 },
-  { x:250, y:370, w:60,  h:100 },
-  { x:330, y:370, w:55,  h:100 },
-  // baris 4
-  { x:70,  y:490, w:60,  h:80 },
-  { x:150, y:490, w:80,  h:80 },
-  { x:250, y:490, w:60,  h:80 },
-  { x:330, y:490, w:55,  h:80 },
+// Titik tengah peta (rata-rata)
+export const CENTER = [
+  (START[0] + END[0]) / 2,
+  (START[1] + END[1]) / 2,
 ];
