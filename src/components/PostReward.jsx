@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const TWIST_MESSAGES = [
   { id: 1, text: 'Eh wait...' },
   { id: 2, text: 'Tapi bohong 🤭' },
-  { id: 3, text: 'Memang dari awal buat kamu kok. 💚' },
+  { id: 3, text: 'Emang dari awal buat kamu kok 💚' },
 ];
 
 function TwistBubble({ text, show }) {
@@ -56,7 +56,7 @@ function SalahKirim({ onKeep }) {
           <div className="pr-tag-light">NOTIFIKASI SISTEM</div>
           <h2 className="pr-title-light">Maaf, terjadi kesalahan</h2>
           <p className="pr-sub-light">
-            GoLove mendeteksi cinta ini <strong>salah kirim</strong>.<br />
+            Sistem mendeteksi cinta ini <strong>salah kirim</strong>.<br />
             Seharusnya tidak berakhir di sini.
           </p>
           <button className="pr-btn-light" onClick={handleKeep}>Tetap terima</button>
@@ -117,7 +117,7 @@ function JanganDibuka({ onOpen }) {
               Tapi karena udah terlanjur...
             </p>
             <p className="pr-reveal-msg" style={{marginTop: 10}}>
-              <strong>aku suka kamu. 💚</strong>
+              <strong>I Love U Mic 😵‍💫💖</strong>
             </p>
           </div>
         )}
