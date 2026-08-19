@@ -69,6 +69,24 @@ button { font: inherit; }
 .twist-header small  { color: #7b877f; font-size: 11px; }
 .twist-bubbles { display: flex; flex-direction: column; gap: 10px; padding: 14px 20px 20px; min-height: 120px; }
 
+/* FORBIDDEN — amplop emoji */
+.pr-forbidden { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 320px; }
+
+/* Emoji amplop besar, animasi bounce saat masuk, flip saat dibuka */
+.env-emoji {
+  font-size: 80px;
+  line-height: 1;
+  margin-bottom: 4px;
+  display: block;
+  animation: envBounce .6s ease-out;
+  transition: transform .4s ease, filter .4s ease;
+  filter: drop-shadow(0 4px 16px #a7f3d055);
+}
+.env-emoji.env-open {
+  animation: envOpen .5s ease-out forwards;
+  filter: drop-shadow(0 4px 24px #00a94f88);
+}
+
 /* Card gelap */
 .pr-card { background: #161b22; border: 1px solid #30363d; border-radius: 20px; padding: 32px 24px; max-width: 360px; width: 100%; text-align: center; animation: pop .4s ease-out; }
 .pr-card.shake { animation: shake .5s ease-out; }
@@ -76,24 +94,17 @@ button { font: inherit; }
 .pr-tag { font-size: 10px; font-weight: 900; letter-spacing: .15em; color: #f59e0b; text-transform: uppercase; margin-bottom: 8px; }
 .pr-title { font-size: 22px; font-weight: 900; color: #f0f6fc; margin: 0 0 10px; }
 .pr-title.light { color: #f0f6fc; }
-.pr-sub { font-size: 14px; color: #8b949e; line-height: 1.6; margin: 0 0 20px; }
+.pr-sub { font-size: 14px; color: #8b949e; line-height: 1.8; margin: 0 0 20px; }
 .pr-sub.light { color: #8b949e; }
 .pr-btn { width: 100%; padding: 13px; border: 0; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 10px; }
 .pr-btn.outline { background: #238636; color: #fff; }
 .pr-btn.ghost { background: transparent; border: 1px solid #30363d; color: #8b949e; }
 .pr-btn.dim { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
 
-/* FORBIDDEN */
-.pr-forbidden { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 320px; }
-.pr-envelope { margin-bottom: 8px; }
-.env-body { position: relative; width: 90px; height: 70px; }
-.env-flap { position: absolute; top: 0; left: 0; right: 0; height: 40px; background: #21262d; border-radius: 8px 8px 0 0; border: 1px solid #30363d; transition: transform .6s ease; }
-.pr-envelope.unlocking .env-flap { transform: rotateX(180deg); transform-origin: top center; }
-.env-lock { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: #161b22; border: 1px solid #30363d; border-radius: 0 0 8px 8px; display: grid; place-items: center; font-size: 24px; transition: font-size .3s; }
-.pr-envelope.opened .env-lock { font-size: 28px; }
+/* Reveal pesan */
 .pr-reveal { animation: popIn .5s ease-out; margin-top: 20px; }
-.pr-reveal-msg { font-size: 16px; color: #c9d1d9; line-height: 1.8; margin: 0; }
-.pr-reveal-msg strong { color: #fff; font-size: 18px; }
+.pr-reveal-msg { font-size: 17px; color: #c9d1d9; line-height: 2; margin: 0; }
+.pr-reveal-msg strong { color: #fff; font-size: 20px; }
 
 /* MAKE A WISH */
 .wish-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -137,12 +148,14 @@ button:disabled { opacity: .45; cursor: default; }
 .summary { display: flex; justify-content: space-between; color: #7b877f; font-size: 11px; margin-top: 5px; }
 .success { display: grid; place-items: center; width: 56px; height: 56px; margin: 4px auto 12px; border-radius: 50%; background: #e8f7ef; font-size: 30px; animation: pop .4s ease-out; }
 
-@keyframes sheetIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
-@keyframes beat    { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-@keyframes wave    { 0% { transform: scale(.7); opacity: .7; } 100% { transform: scale(2.3); opacity: 0; } }
-@keyframes pop     { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes popIn   { from { transform: translateX(-12px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes shake   { 0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)} }
+@keyframes sheetIn  { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes beat     { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+@keyframes wave     { 0% { transform: scale(.7); opacity: .7; } 100% { transform: scale(2.3); opacity: 0; } }
+@keyframes pop      { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes popIn    { from { transform: translateX(-12px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes shake    { 0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)} }
+@keyframes envBounce{ 0%{transform:scale(0) rotate(-15deg);opacity:0} 60%{transform:scale(1.15) rotate(4deg)} 100%{transform:scale(1) rotate(0);opacity:1} }
+@keyframes envOpen  { 0%{transform:scale(1) rotate(0)} 40%{transform:scale(1.2) rotate(-6deg)} 70%{transform:scale(.9) rotate(4deg)} 100%{transform:scale(1.05) rotate(0)} }
 
 @media (min-width: 700px) { .app { max-width: 520px; margin: auto; box-shadow: 0 0 40px #0003; } }
 @media (max-height: 640px) {
