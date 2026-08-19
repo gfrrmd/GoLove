@@ -66,7 +66,7 @@ function SalahKirim({ onKeep }) {
         <div className="twist-chat">
           <div className="twist-header">
             <div className="chat-avatar">💚</div>
-            <div><strong>Cintaku</strong><small>Online • sekarang</small></div>
+            <div><strong>Rama</strong><small>Online • sekarang</small></div>
           </div>
           <div className="twist-bubbles">
             {TWIST_MESSAGES.map((m, i) => (
