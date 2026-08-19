@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const MESSAGES = [
   { id: 1, text: 'Hey Mick 👋' },
@@ -24,15 +24,101 @@ function RatingStars({ value, onChange }) {
   return (
     <div className="stars">
       {[1,2,3,4,5].map((n) => (
-        <button
-          key={n}
-          className={`star${value >= n ? ' filled' : ''}`}
-          onClick={() => onChange(n)}
-          aria-label={`${n} bintang`}
-        >
+        <button key={n} className={`star${value >= n ? ' filled' : ''}`}
+          onClick={() => onChange(n)} aria-label={`${n}`}>
           💚
         </button>
       ))}
+    </div>
+  );
+}
+
+// Konfeti canvas
+function Confetti() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    const ctx = canvas.getContext('2d');
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    const COLORS = ['#00b14f','#34d399','#6ee7b7','#fbbf24','#f472b6','#a78bfa','#fff'];
+    const pieces = Array.from({ length: 90 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height,
+      w: 8 + Math.random() * 8,
+      h: 5 + Math.random() * 5,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      speed: 2 + Math.random() * 3,
+      angle: Math.random() * Math.PI * 2,
+      spin:  (Math.random() - .5) * .15,
+      drift: (Math.random() - .5) * 1.2,
+    }));
+
+    let running = true;
+    function draw() {
+      if (!running) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach((p) => {
+        ctx.save();
+        ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+        p.y += p.speed;
+        p.x += p.drift;
+        p.angle += p.spin;
+        if (p.y > canvas.height) {
+          p.y = -p.h;
+          p.x = Math.random() * canvas.width;
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+    const stop = setTimeout(() => { running = false; }, 4000);
+    return () => { running = false; clearTimeout(stop); };
+  }, []);
+
+  return <canvas ref={ref} className="confetti-canvas" />;
+}
+
+// Voucher / Surat Cinta
+function LoveVoucher({ rating }) {
+  const lines = [
+    'Satu pelukan gratis',
+    'Berlaku selamanya ∞',
+    'Tidak bisa dipindahtangankan',
+  ];
+  return (
+    <div className="voucher">
+      <div className="voucher-top">
+        <span className="voucher-icon">💌</span>
+        <div>
+          <div className="voucher-brand">GoLove • Hadiah Spesial</div>
+          <div className="voucher-title">Surat Cinta Untukmu</div>
+        </div>
+      </div>
+      <div className="voucher-divider">
+        <div className="notch left" />
+        <div className="dashes" />
+        <div className="notch right" />
+      </div>
+      <div className="voucher-body">
+        <p className="voucher-msg">
+          “Makasih ya Mick, udah mau nerima cinta aku.
+          Semoga hari kamu seindah senyum kamu.”
+        </p>
+        <ul className="voucher-terms">
+          {lines.map((l, i) => <li key={i}>✓ {l}</li>)}
+        </ul>
+        <div className="voucher-rating">
+          {'&zwj;'}
+          <span style={{letterSpacing:2}}>{'&#128154;'.repeat ? '💚'.repeat(rating) : ''}</span>
+          <small>Rasa cinta yang kamu berikan</small>
+        </div>
+      </div>
     </div>
   );
 }
@@ -47,21 +133,16 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
 
   useEffect(() => {
     if (phase === 'idle') {
-      setChatOpen(false);
-      setShown(0);
-      setRating(0);
-      setSubmitted(false);
+      setChatOpen(false); setShown(0); setRating(0); setSubmitted(false);
     }
   }, [phase]);
 
   useEffect(() => {
-    if (!chatOpen) return;
-    if (shown >= MESSAGES.length) return;
+    if (!chatOpen || shown >= MESSAGES.length) return;
     const t = setTimeout(() => setShown((s) => s + 1), 2000);
     return () => clearTimeout(t);
   }, [chatOpen, shown]);
 
-  // Searching
   if (phase === 'searching') return (
     <section className="sheet center">
       <div className="handle" />
@@ -72,7 +153,6 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     </section>
   );
 
-  // Tracking
   if (phase === 'tracking') return (
     <section className="sheet">
       <div className="handle" />
@@ -91,7 +171,6 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     </section>
   );
 
-  // Arrived: notif pesan
   if (phase === 'arrived' && !chatOpen) return (
     <section className="sheet center">
       <div className="handle" />
@@ -103,23 +182,17 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     </section>
   );
 
-  // Chat full screen
   if (phase === 'arrived' && chatOpen && !submitted) return (
     <section className="sheet sheet--chat">
       <div className="chat-header">
         <div className="chat-avatar">💚</div>
-        <div>
-          <strong>Cintaku</strong>
-          <small>Online • sekarang</small>
-        </div>
+        <div><strong>Cintaku</strong><small>Online • sekarang</small></div>
       </div>
-
       <div className="chat">
         {MESSAGES.map((m, i) => (
           <ChatBubble key={m.id} text={m.text} show={shown > i} />
         ))}
       </div>
-
       {shown >= MESSAGES.length && (
         <div className="rating-wrap">
           <p className="rating-label">Beri rasa cintamu 💚</p>
@@ -132,19 +205,18 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     </section>
   );
 
-  // Submitted
+  // Submitted: konfeti + voucher
   if (submitted) return (
-    <section className="sheet center">
-      <div className="handle" />
-      <div className="success">✓</div>
-      <label>TERIMA KASIH</label>
-      <h2>Cintamu diterima! {'💚'.repeat(rating)}</h2>
-      <p>Semoga harimu menjadi lebih manis hari ini 😊</p>
-      <button onClick={onAccept}>Tutup</button>
+    <section className="sheet sheet--reward">
+      <Confetti />
+      <div className="reward-inner">
+        <div className="reward-title">🎉 Cintamu diterima!</div>
+        <LoveVoucher rating={rating} />
+        <button className="btn-close" onClick={onAccept}>Simpan kenangan ini 💚</button>
+      </div>
     </section>
   );
 
-  // Idle
   return (
     <section className="sheet">
       <div className="handle" />
