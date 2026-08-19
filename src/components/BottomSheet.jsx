@@ -33,29 +33,36 @@ function RatingStars({ value, onChange }) {
   );
 }
 
-// Konfeti canvas
+// Konfeti — berjalan terus selama komponen mounted
 function Confetti() {
   const ref = useRef(null);
   useEffect(() => {
     const canvas = ref.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    canvas.width  = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
 
-    const COLORS = ['#00b14f','#34d399','#6ee7b7','#fbbf24','#f472b6','#a78bfa','#fff'];
-    const pieces = Array.from({ length: 90 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * -canvas.height,
-      w: 8 + Math.random() * 8,
-      h: 5 + Math.random() * 5,
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLORS = ['#00b14f','#34d399','#6ee7b7','#fbbf24','#f472b6','#a78bfa','#ffffff','#fbcfe8'];
+    const pieces = Array.from({ length: 100 }, () => ({
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * -canvas.height,
+      w:     7 + Math.random() * 9,
+      h:     4 + Math.random() * 6,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      speed: 2 + Math.random() * 3,
+      speed: 1.5 + Math.random() * 2.5,
       angle: Math.random() * Math.PI * 2,
-      spin:  (Math.random() - .5) * .15,
-      drift: (Math.random() - .5) * 1.2,
+      spin:  (Math.random() - .5) * .12,
+      drift: (Math.random() - .5) * 1,
     }));
 
     let running = true;
+
     function draw() {
       if (!running) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -66,31 +73,31 @@ function Confetti() {
         ctx.fillStyle = p.color;
         ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
         ctx.restore();
-        p.y += p.speed;
-        p.x += p.drift;
+        p.y     += p.speed;
+        p.x     += p.drift;
         p.angle += p.spin;
-        if (p.y > canvas.height) {
-          p.y = -p.h;
+        // reset ke atas saat keluar bawah layar
+        if (p.y > canvas.height + p.h) {
+          p.y = -p.h * 2;
           p.x = Math.random() * canvas.width;
         }
       });
       requestAnimationFrame(draw);
     }
+
     draw();
-    const stop = setTimeout(() => { running = false; }, 4000);
-    return () => { running = false; clearTimeout(stop); };
+
+    // Bersihkan hanya saat komponen unmount — tidak ada setTimeout stop
+    return () => {
+      running = false;
+      window.removeEventListener('resize', resize);
+    };
   }, []);
 
   return <canvas ref={ref} className="confetti-canvas" />;
 }
 
-// Voucher / Surat Cinta
 function LoveVoucher({ rating }) {
-  const lines = [
-    'Satu pelukan gratis',
-    'Berlaku selamanya ∞',
-    'Tidak bisa dipindahtangankan',
-  ];
   return (
     <div className="voucher">
       <div className="voucher-top">
@@ -111,11 +118,12 @@ function LoveVoucher({ rating }) {
           Semoga hari kamu seindah senyum kamu.”
         </p>
         <ul className="voucher-terms">
-          {lines.map((l, i) => <li key={i}>✓ {l}</li>)}
+          <li>✓ Satu pelukan gratis</li>
+          <li>✓ Berlaku selamanya ∞</li>
+          <li>✓ Tidak bisa dipindahtangankan</li>
         </ul>
         <div className="voucher-rating">
-          {'&zwj;'}
-          <span style={{letterSpacing:2}}>{'&#128154;'.repeat ? '💚'.repeat(rating) : ''}</span>
+          <span>{'💚'.repeat(rating)}</span>
           <small>Rasa cinta yang kamu berikan</small>
         </div>
       </div>
@@ -205,7 +213,6 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     </section>
   );
 
-  // Submitted: konfeti + voucher
   if (submitted) return (
     <section className="sheet sheet--reward">
       <Confetti />
