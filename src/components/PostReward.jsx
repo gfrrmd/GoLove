@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const TWIST_MESSAGES = [
   { id: 1, text: 'Eh wait...' },
   { id: 2, text: 'Tapi bohong 🤭' },
-  { id: 3, text: 'Emang dari awal buat kamu kok 💚' },
+  { id: 3, text: 'Emang dari awal buat kamu kok 💚💚💚💚💚' },
 ];
 
 function TwistBubble({ text, show }) {
