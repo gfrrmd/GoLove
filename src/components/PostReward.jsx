@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// ─── FASE 1: Salah Kirim (sheet putih + chat twist) ────────────────
+// ─── FASE 1: Salah Kirim ───────────────────────────────────────────
 const TWIST_MESSAGES = [
   { id: 1, text: 'Eh wait...' },
   { id: 2, text: 'Tapi bohong 🤭' },
@@ -10,7 +10,7 @@ const TWIST_MESSAGES = [
 function TwistBubble({ text, show }) {
   return (
     <div style={{
-      transition: 'opacity .4s, transform .4s',
+      transition: 'opacity .5s, transform .5s',
       opacity: show ? 1 : 0,
       transform: show ? 'translateY(0)' : 'translateY(10px)',
       pointerEvents: show ? 'auto' : 'none',
@@ -25,7 +25,6 @@ function SalahKirim({ onKeep }) {
   const [showChat, setShowChat] = useState(false);
   const [shown, setShown]       = useState(0);
 
-  // Setelah tombol diklik: shake → tampil chat twist satu per satu
   function handleKeep() {
     setShake(true);
     setTimeout(() => {
@@ -35,24 +34,22 @@ function SalahKirim({ onKeep }) {
     }, 600);
   }
 
-  // Muncul tiap 2 detik
+  // Tiap bubble muncul dengan jeda 2.5 detik agar terbaca
   useEffect(() => {
     if (!showChat || shown >= TWIST_MESSAGES.length) return;
-    const t = setTimeout(() => setShown((s) => s + 1), 2000);
+    const t = setTimeout(() => setShown((s) => s + 1), 2500);
     return () => clearTimeout(t);
   }, [showChat, shown]);
 
-  // Lanjut ke fase berikutnya setelah pesan terakhir muncul
+  // Lanjut setelah pesan terakhir dibaca (3 detik)
   useEffect(() => {
-    if (shown >= TWIST_MESSAGES.length) {
-      const t = setTimeout(onKeep, 2200);
-      return () => clearTimeout(t);
-    }
+    if (shown < TWIST_MESSAGES.length) return;
+    const t = setTimeout(onKeep, 3000);
+    return () => clearTimeout(t);
   }, [shown]);
 
   return (
     <div className="pr-screen pr-light">
-      {/* Card notifikasi */}
       {!showChat && (
         <div className={`pr-card-light${shake ? ' shake' : ''}`}>
           <div className="pr-icon">⚠️</div>
@@ -62,21 +59,14 @@ function SalahKirim({ onKeep }) {
             GoLove mendeteksi cinta ini <strong>salah kirim</strong>.<br />
             Seharusnya tidak berakhir di sini.
           </p>
-          <button className="pr-btn-light" onClick={handleKeep}>
-            Tetap terima
-          </button>
+          <button className="pr-btn-light" onClick={handleKeep}>Tetap terima</button>
         </div>
       )}
-
-      {/* Chat twist dari driver */}
       {showChat && (
         <div className="twist-chat">
           <div className="twist-header">
             <div className="chat-avatar">💚</div>
-            <div>
-              <strong>Cintaku</strong>
-              <small>Online • sekarang</small>
-            </div>
+            <div><strong>Cintaku</strong><small>Online • sekarang</small></div>
           </div>
           <div className="twist-bubbles">
             {TWIST_MESSAGES.map((m, i) => (
@@ -91,42 +81,47 @@ function SalahKirim({ onKeep }) {
 
 // ─── FASE 2: Jangan Dibuka ─────────────────────────────────────────
 function JanganDibuka({ onOpen }) {
-  const [unlocking, setUnlocking] = useState(false);
-  const [opened, setOpened]       = useState(false);
+  const [opened, setOpened] = useState(false);
 
   function handleOpen() {
-    if (unlocking) return;
-    setUnlocking(true);
-    setTimeout(() => { setOpened(true); }, 700);
-    setTimeout(() => { onOpen(); }, 2200);
+    if (opened) return;
+    setOpened(true);
+    // Tunggu 3 detik agar pesan terbaca sebelum lanjut
+    setTimeout(() => { onOpen(); }, 3200);
   }
 
   return (
     <div className="pr-screen pr-dark">
       <div className="pr-forbidden">
-        <div className={`pr-envelope${unlocking ? ' unlocking' : ''}${opened ? ' opened' : ''}`}>
-          <div className="env-body">
-            <div className="env-flap" />
-            <div className="env-lock">{opened ? '💚' : '🔒'}</div>
-          </div>
+
+        {/* Amplop pakai emoji besar, animasi saat dibuka */}
+        <div className={`env-emoji${opened ? ' env-open' : ''}`}>
+          {opened ? '💚' : '💌'}
         </div>
+
         {!opened && (
           <>
-            <div className="pr-tag" style={{marginTop:24}}>PERINGATAN</div>
+            <div className="pr-tag" style={{marginTop: 20}}>PERINGATAN</div>
             <h2 className="pr-title">Jangan dibuka.</h2>
-            <p className="pr-sub">Ini bukan untukmu. Jangan penasaran.</p>
+            <p className="pr-sub">Ini bukan untukmu.<br />Jangan penasaran.</p>
             <button className="pr-btn dim" onClick={handleOpen}>Buka anyway</button>
           </>
         )}
+
         {opened && (
           <div className="pr-reveal">
             <p className="pr-reveal-msg">
-              Udah dibilang jangan dibuka.<br />
-              Tapi karena udah terlanjur...<br />
+              Udah dibilang jangan dibuka.
+            </p>
+            <p className="pr-reveal-msg" style={{marginTop: 10}}>
+              Tapi karena udah terlanjur...
+            </p>
+            <p className="pr-reveal-msg" style={{marginTop: 10}}>
               <strong>aku suka kamu. 💚</strong>
             </p>
           </div>
         )}
+
       </div>
     </div>
   );
@@ -177,7 +172,9 @@ function MakeAWish({ onDone }) {
         shoot.x+=shoot.vx; shoot.y+=shoot.vy; shoot.life-=.018;
         if(shoot.life<=0) shoot.active=false;
         ctx.save(); ctx.globalAlpha=shoot.life; ctx.strokeStyle='#a7f3d0'; ctx.lineWidth=1.5;
-        ctx.beginPath(); ctx.moveTo(shoot.x,shoot.y); ctx.lineTo(shoot.x-shoot.vx*12,shoot.y-shoot.vy*12); ctx.stroke(); ctx.restore();
+        ctx.beginPath(); ctx.moveTo(shoot.x,shoot.y);
+        ctx.lineTo(shoot.x-shoot.vx*12,shoot.y-shoot.vy*12);
+        ctx.stroke(); ctx.restore();
       }
       requestAnimationFrame(draw);
     }
@@ -197,9 +194,11 @@ function MakeAWish({ onDone }) {
       <canvas ref={canvasRef} className="wish-canvas" />
       <div className="wish-overlay">
         {!wished ? (
-          <><div className="wish-star-icon">✨</div>
+          <>
+            <div className="wish-star-icon">✨</div>
             <h2 className="pr-title light">Kamu punya 1 permintaan.</h2>
-            <p className="pr-sub light">Tutup mata, pikirkan,<br />lalu ketuk layar.</p></>
+            <p className="pr-sub light">Tutup mata, pikirkan,<br />lalu ketuk layar.</p>
+          </>
         ) : (
           <div className="wish-reveal">
             <div className="wish-star-icon big">💚</div>
