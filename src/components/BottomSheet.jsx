@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const MESSAGES = [
-  { id: 1, text: 'Hey Mick 👋' },
+  { id: 1, text: 'Hey Mic 👋' },
   { id: 2, text: "I'm here anw" },
   { id: 3, text: 'Jangan cuek-cuek gitu dong 🥺' },
   { id: 4, text: 'Nanti kesepian akunya haha.' },
