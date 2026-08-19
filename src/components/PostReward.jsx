@@ -22,9 +22,6 @@ function SalahKirim({ onKeep }) {
         <button className="pr-btn outline" onClick={handleKeep}>
           Tetap terima
         </button>
-        <button className="pr-btn ghost" onClick={handleKeep}>
-          Kembalikan
-        </button>
       </div>
     </div>
   );
@@ -39,7 +36,7 @@ function JanganDibuka({ onOpen }) {
     if (unlocking) return;
     setUnlocking(true);
     setTimeout(() => { setOpened(true); }, 700);
-    setTimeout(() => { onOpen(); }, 2000);
+    setTimeout(() => { onOpen(); }, 2200);
   }
 
   return (
@@ -79,9 +76,9 @@ function JanganDibuka({ onOpen }) {
 
 // ─── FASE 3: Make a Wish (canvas bintang) ─────────────────────────
 function MakeAWish({ onDone }) {
-  const canvasRef  = useRef(null);
-  const [wished, setWished]   = useState(false);
-  const [falling, setFalling] = useState(false);
+  const canvasRef = useRef(null);
+  const starsRef  = useRef([]);
+  const [wished, setWished] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -95,17 +92,16 @@ function MakeAWish({ onDone }) {
     resize();
     window.addEventListener('resize', resize);
 
-    const stars = Array.from({ length: 120 }, () => ({
-      x:    Math.random() * canvas.width,
-      y:    Math.random() * canvas.height,
-      r:    .5 + Math.random() * 1.8,
-      a:    Math.random(),
-      da:   .005 + Math.random() * .01,
+    starsRef.current = Array.from({ length: 120 }, () => ({
+      x:  Math.random() * canvas.width,
+      y:  Math.random() * canvas.height,
+      r:  .5 + Math.random() * 1.8,
+      a:  Math.random(),
+      da: .005 + Math.random() * .01,
       fall: false,
-      vy:   0,
+      vy: 0,
     }));
 
-    // 1 shooting star
     let shoot = { active: false, x: 0, y: 0, vx: 0, vy: 0, life: 0 };
     let shootTimer = setTimeout(launchShoot, 1200);
 
@@ -125,16 +121,13 @@ function MakeAWish({ onDone }) {
 
     function draw() {
       if (!running) return;
-
-      // Gradient langit malam
       const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
       grad.addColorStop(0, '#0a0e1a');
       grad.addColorStop(1, '#0d1f2d');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Bintang
-      stars.forEach((s) => {
+      starsRef.current.forEach((s) => {
         s.a += s.da;
         if (s.a > 1 || s.a < 0) s.da *= -1;
         if (s.fall) { s.y += s.vy; s.vy += .15; }
@@ -144,11 +137,8 @@ function MakeAWish({ onDone }) {
         ctx.fill();
       });
 
-      // Shooting star
       if (shoot.active) {
-        shoot.x += shoot.vx;
-        shoot.y += shoot.vy;
-        shoot.life -= .018;
+        shoot.x += shoot.vx; shoot.y += shoot.vy; shoot.life -= .018;
         if (shoot.life <= 0) shoot.active = false;
         ctx.save();
         ctx.globalAlpha = shoot.life;
@@ -165,7 +155,6 @@ function MakeAWish({ onDone }) {
     }
 
     draw();
-
     return () => {
       running = false;
       clearTimeout(shootTimer);
@@ -176,12 +165,8 @@ function MakeAWish({ onDone }) {
   function handleWish() {
     if (wished) return;
     setWished(true);
-    setFalling(true);
-    // Trigger semua bintang jatuh via canvas ref
-    if (canvasRef.current) {
-      // sinyal via dataset
-      canvasRef.current.dataset.fall = 'true';
-    }
+    // Bintang mulai jatuh
+    starsRef.current.forEach((s) => { s.fall = true; s.vy = Math.random() * 2; });
     setTimeout(onDone, 3200);
   }
 
@@ -210,7 +195,6 @@ function MakeAWish({ onDone }) {
 // ─── CONTROLLER ───────────────────────────────────────────────────
 export default function PostReward({ onFinish }) {
   const [step, setStep] = useState(0);
-  // 0 = salah kirim, 1 = jangan dibuka, 2 = make a wish
 
   if (step === 0) return <SalahKirim onKeep={() => setStep(1)} />;
   if (step === 1) return <JanganDibuka onOpen={() => setStep(2)} />;
