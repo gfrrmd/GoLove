@@ -4,7 +4,6 @@ import L from 'leaflet';
 import { CENTER, START, END } from '../data/route';
 import 'leaflet/dist/leaflet.css';
 
-// Fix icon Leaflet + Vite
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -28,9 +27,9 @@ const makeIcon = (bg, emoji, label) => L.divIcon({
   </div>`,
 });
 
-const iconDriver  = makeIcon('#00b14f', '\u2665', 'Cintaku');
-const iconSearch  = makeIcon('#f59e0b', '\u2665', 'Mencari...');
-const iconDest    = makeIcon('#e5484d', '\u2665', 'Kamu');
+const iconDriver = makeIcon('#00b14f', '\u2665', 'Cintaku');
+const iconSearch = makeIcon('#f59e0b', '\u2665', 'Mencari...');
+const iconDest   = makeIcon('#e5484d', '\u2665', 'Kamu');
 
 function MovingMarker({ pos, searching }) {
   const ref = useRef(null);
@@ -38,22 +37,40 @@ function MovingMarker({ pos, searching }) {
   return <Marker ref={ref} position={pos} icon={searching ? iconSearch : iconDriver} />;
 }
 
-function FitRoute({ route }) {
+// Fit bounds dengan offset bawah agar tidak tertutup bottom sheet
+function FitRoute({ route, phase }) {
   const map = useMap();
+
   useEffect(() => {
-    const bounds = route?.length >= 2 ? route : [START, END];
-    map.fitBounds(bounds, { padding: [60, 80] });
-  }, [map, route]);
+    if (phase === 'idle' || phase === 'searching') {
+      // Sebelum rute datang: tampilkan kedua marker saja,
+      // dengan paddingBottom besar agar tidak tertutup sheet
+      map.fitBounds([START, END], {
+        paddingTopLeft: [40, 60],
+        paddingBottomRight: [40, 320],
+      });
+    }
+  }, [phase]);
+
+  useEffect(() => {
+    if (route?.length >= 2) {
+      // Setelah rute OSRM datang: fit ke seluruh rute
+      map.fitBounds(route, {
+        paddingTopLeft: [40, 60],
+        paddingBottomRight: [40, 280],
+      });
+    }
+  }, [route]);
+
   return null;
 }
 
-export default function MapView({ pos, searching, route, remaining }) {
-  // Sebelum rute OSRM datang, tampilkan garis lurus
-  const displayRoute = remaining?.length >= 2
-    ? remaining
-    : route?.length >= 2
-    ? route
-    : [START, END];
+export default function MapView({ pos, searching, route, remaining, phase }) {
+  // Garis hijau:
+  // - idle / searching            : tidak ada garis (rute belum diketahui)
+  // - tracking                    : garis memendek (remaining)
+  // - arrived / accepted          : tidak ada garis (sudah selesai)
+  const showLine = phase === 'tracking' && remaining?.length >= 2;
 
   return (
     <MapContainer center={CENTER} zoom={14} className="map" zoomControl={false}
@@ -63,12 +80,12 @@ export default function MapView({ pos, searching, route, remaining }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      <FitRoute route={route} />
+      <FitRoute route={route} phase={phase} />
 
-      {/* Garis rute: memendek sesuai progress */}
-      {displayRoute.length >= 2 && (
+      {/* Garis rute memendek hanya saat tracking */}
+      {showLine && (
         <Polyline
-          positions={displayRoute}
+          positions={remaining}
           pathOptions={{
             color: '#00b14f',
             weight: 6,

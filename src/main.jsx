@@ -7,15 +7,17 @@ import { interpolateRoute, remainingRoute } from './utils/animation';
 import MapView from './components/MapView';
 import BottomSheet from './components/BottomSheet';
 
+const TRACKING_DURATION = 15000; // 15 detik
+
 function App() {
   const [phase, setPhase]         = useState('idle');
   const [progress, setProgress]   = useState(0);
-  const [route, setRoute]         = useState(null);      // semua titik rute OSRM
-  const [pos, setPos]             = useState(START);     // posisi marker saat ini
-  const [remaining, setRemaining] = useState(null);      // sisa rute (memendek)
+  const [route, setRoute]         = useState(null);
+  const [pos, setPos]             = useState(START);
+  const [remaining, setRemaining] = useState(null);
   const [error, setError]         = useState('');
 
-  // ─── Searching: fetch rute OSRM, lalu mulai tracking ───
+  // Searching → fetch OSRM di background, tunggu 5 detik
   useEffect(() => {
     if (phase !== 'searching') return;
     let cancelled = false;
@@ -26,7 +28,7 @@ function App() {
         const points = await fetchRoute();
         if (cancelled) return;
         setRoute(points);
-        setRemaining(points);   // mula-mula garis penuh
+        setRemaining(points);
         setPos(points[0]);
         setPhase('tracking');
       } catch (e) {
@@ -40,7 +42,7 @@ function App() {
     return () => { cancelled = true; clearTimeout(timer); };
   }, [phase]);
 
-  // ─── Tracking: animasi 10 detik, garis memendek ───
+  // Tracking → animasi 15 detik
   useEffect(() => {
     if (phase !== 'tracking' || !route?.length) return;
 
@@ -48,13 +50,19 @@ function App() {
     let id;
 
     function animate(now) {
-      const t = Math.min((now - startTime) / 10000, 1);
+      const t = Math.min((now - startTime) / TRACKING_DURATION, 1);
       setProgress(t);
       setPos(interpolateRoute(route, t));
-      setRemaining(remainingRoute(route, t));   // potong garis dari posisi sekarang
 
-      if (t < 1) id = requestAnimationFrame(animate);
-      else setPhase('arrived');
+      if (t < 1) {
+        setRemaining(remainingRoute(route, t));
+        id = requestAnimationFrame(animate);
+      } else {
+        // Sampai: bersihkan garis, taruh marker tepat di tujuan
+        setRemaining([]);
+        setPos(route.at(-1));
+        setPhase('arrived');
+      }
     }
 
     id = requestAnimationFrame(animate);
@@ -76,6 +84,7 @@ function App() {
         searching={phase === 'searching'}
         route={route}
         remaining={remaining}
+        phase={phase}
       />
 
       <div className="brand">♥ GoLove</div>
