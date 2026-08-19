@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 const MESSAGES = [
   { id: 1, text: 'Hey Mick 👋' },
-  { id: 2, text: "I'm here 💚" },
+  { id: 2, text: "I'm here anw" },
   { id: 3, text: 'Jangan cuek-cuek gitu dong 🥺' },
-  { id: 4, text: 'Nanti kesepian akunya 😢' },
+  { id: 4, text: 'Nanti kesepian akunya haha.' },
 ];
 
 function ChatBubble({ text, show }) {
@@ -76,9 +76,9 @@ function LoveVoucher({ rating }) {
         <div className="notch left" /><div className="dashes" /><div className="notch right" />
       </div>
       <div className="voucher-body">
-        <p className="voucher-msg">“Makasih ya Mick, udah mau nerima cinta aku. Semoga hari kamu seindah senyum kamu.”</p>
+        <p className="voucher-msg">“Makasih ya, Mic, udah hadir di hidupku. Aku nggak tahu ke depannya kita bakal ngelewatin apa aja, tapi aku berharap semoga kita bisa terus saling nemenin, saling ngerti, dan saling jaga. Semoga apa pun yang nanti kita jalanin, bisa jadi sesuatu yang indah buat kita berdua. I’m really glad I met you, and I hope this is just the beginning of something good for us. 💘”</p>
         <ul className="voucher-terms">
-          <li>✓ Satu pelukan gratis</li>
+          <li>✓ Satu ciuman gratis</li>
           <li>✓ Berlaku selamanya ∞</li>
           <li>✓ Tidak bisa dipindahtangankan</li>
         </ul>
@@ -112,8 +112,8 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     <section className="sheet center">
       <div className="handle" />
       <div className="radar"><span className="radar-heart">💚</span></div>
-      <h2>Mencari cintaku...</h2>
-      <p>Sedang mencari jalan terbaik untuk mengantarkan rasa sayangmu.</p>
+      <h2>Mencari cinta...</h2>
+      <p>Sedang mencari jalan terbaik untuk mengantarkan rasa sayangku.</p>
       <div className="dots">● ● ●</div>
     </section>
   );
@@ -121,11 +121,11 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
   if (phase === 'tracking') return (
     <section className="sheet">
       <div className="handle" />
-      <label>CINTAKU DITEMUKAN</label>
+      <label>CINTA DITEMUKAN</label>
       <div className="head"><h2>Menuju ke tempatmu</h2><div className="eta">{remaining}<small>detik lagi</small></div></div>
       <div className="card"><i className="avatar">💚</i><div><strong>Cintaku</strong><small>Perjalanan khusus untukmu</small></div></div>
       <div className="progress"><div style={{ width: progress * 100 + '%' }} /></div>
-      <div className="summary"><span>Hatiku</span><span>Tempatmu</span></div>
+      <div className="summary"><span>Hatiku</span><span>Hatimu</span></div>
       <button className="secondary" onClick={onCancel}>Batalkan perjalanan</button>
     </section>
   );
@@ -134,9 +134,9 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     <section className="sheet center">
       <div className="handle" />
       <div className="success">💚</div>
-      <label>CINTAKU SUDAH SAMPAI</label>
+      <label>CINTA SUDAH SAMPAI</label>
       <h2>Ada pesan untukmu 💌</h2>
-      <p>Cintaku mau bilang sesuatu. Mau dibuka?</p>
+      <p>Seseorang mau bilang sesuatu. Mau dibuka?</p>
       <button onClick={() => { setChatOpen(true); setShown(1); }}>Buka pesan</button>
     </section>
   );
@@ -166,7 +166,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
     <section className="sheet sheet--reward">
       <Confetti />
       <div className="reward-inner">
-        <div className="reward-title">🎉 Cintamu diterima!</div>
+        <div className="reward-title">🎉 Cinta diterima!</div>
         <LoveVoucher rating={rating} />
         <button className="btn-close" onClick={onAccept}>Simpan kenangan ini 💚</button>
       </div>
@@ -181,8 +181,8 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
       <div className="loc"><i /><div><small>Dari</small><strong>Hatimu</strong></div></div>
       <div className="line" />
       <div className="loc"><i className="red" /><div><small>Menuju</small><strong>Tempat dia berada</strong></div></div>
-      <div className="fare"><span>Biaya perjalanan</span><b>1 pelukan 🤗</b></div>
-      <button onClick={onStart}>Cari cintaku 💌</button>
+      <div className="fare"><span>Biaya perjalanan</span><b>[PROMO] 1 Kiss Only</b></div>
+      <button onClick={onStart}>Cari cinta</button>
     </section>
   );
 }
