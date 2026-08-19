@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/global.css';
 import { routePoints } from './data/route';
-import { interpolateRoute, getRotation } from './utils/animation';
+import { interpolateRoute } from './utils/animation';
 import MapView from './components/MapView';
 import BottomSheet from './components/BottomSheet';
 
@@ -10,12 +10,14 @@ function App() {
   const [phase, setPhase] = useState('idle');
   const [progress, setProgress] = useState(0);
 
+  // Fase searching: 5 detik
   useEffect(() => {
     if (phase !== 'searching') return;
-    const t = setTimeout(() => setPhase('tracking'), 2200);
+    const t = setTimeout(() => setPhase('tracking'), 5000);
     return () => clearTimeout(t);
   }, [phase]);
 
+  // Fase tracking: 10 detik
   useEffect(() => {
     if (phase !== 'tracking') return;
     const start = performance.now();
@@ -34,13 +36,9 @@ function App() {
     ? routePoints[0]
     : interpolateRoute(routePoints, progress);
 
-  const rotation = phase === 'tracking'
-    ? getRotation(routePoints, progress)
-    : 0;
-
   return (
     <main className="app">
-      <MapView pos={driverPos} searching={phase === 'searching'} rotation={rotation} />
+      <MapView pos={driverPos} searching={phase === 'searching'} />
       <div className="brand">♥ GoLove</div>
       <BottomSheet
         phase={phase}

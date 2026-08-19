@@ -1,54 +1,47 @@
-// Semua koordinat dalam satuan SVG viewBox 0 0 400 700
-// Titik rute utama yang dilalui marker cintaku
+// viewBox 0 0 400 700
 export const routePoints = [
   { x: 60,  y: 580 },
   { x: 60,  y: 480 },
-  { x: 120, y: 480 },
-  { x: 120, y: 380 },
-  { x: 200, y: 380 },
-  { x: 200, y: 260 },
-  { x: 300, y: 260 },
-  { x: 300, y: 160 },
-  { x: 340, y: 160 },
+  { x: 140, y: 480 },
+  { x: 140, y: 360 },
+  { x: 240, y: 360 },
+  { x: 240, y: 240 },
+  { x: 320, y: 240 },
+  { x: 320, y: 150 },
 ];
 
-// Jaringan jalan di peta (menyerupai grid kota)
 export const mapRoads = [
-  // Jalan horizontal
-  { points: [[0,160],[400,160]], label: 'Jl. Kenangan' },
-  { points: [[0,260],[400,260]], label: 'Jl. Rindu' },
-  { points: [[0,380],[400,380]], label: 'Jl. Cinta' },
-  { points: [[0,480],[400,480]], label: 'Jl. Sayang' },
-  { points: [[0,580],[400,580]], label: 'Jl. Kasih' },
-  // Jalan vertikal
-  { points: [[60,0],[60,700]],   label: 'Jl. Setia' },
-  { points: [[120,0],[120,700]], label: 'Jl. Tulus' },
-  { points: [[200,0],[200,700]], label: 'Jl. Jujur' },
-  { points: [[300,0],[300,700]], label: 'Jl. Abadi' },
-  { points: [[340,0],[340,700]], label: 'Jl. Selamanya' },
-  // Jalan diagonal / minor
-  { points: [[0,320],[80,260]],  label: '' },
-  { points: [[150,480],[200,380]], label: '' },
-  { points: [[300,380],[360,320],[400,320]], label: '' },
-  { points: [[0,440],[60,380]], label: '' },
-  { points: [[200,480],[300,380]], label: '' },
+  // Horizontal
+  { points: [[0,150],[400,150]] },
+  { points: [[0,240],[400,240]] },
+  { points: [[0,360],[400,360]] },
+  { points: [[0,480],[400,480]] },
+  { points: [[0,580],[400,580]] },
+  // Vertikal
+  { points: [[60,0],[60,700]]   },
+  { points: [[140,0],[140,700]] },
+  { points: [[240,0],[240,700]] },
+  { points: [[320,0],[320,700]] },
 ];
 
-// Blok bangunan (kotak abu-abu seperti Google Maps)
-export const buildings = [
-  { x: 70,  y: 170, w: 40, h: 80 },
-  { x: 130, y: 170, w: 60, h: 80 },
-  { x: 210, y: 170, w: 80, h: 80 },
-  { x: 70,  y: 270, w: 40, h: 100 },
-  { x: 130, y: 270, w: 60, h: 100 },
-  { x: 210, y: 270, w: 80, h: 100 },
-  { x: 310, y: 270, w: 20, h: 100 },
-  { x: 70,  y: 390, w: 40, h: 80 },
-  { x: 130, y: 390, w: 60, h: 80 },
-  { x: 210, y: 390, w: 80, h: 80 },
-  { x: 310, y: 390, w: 20, h: 80 },
-  { x: 70,  y: 490, w: 40, h: 80 },
-  { x: 130, y: 490, w: 60, h: 80 },
-  { x: 210, y: 490, w: 80, h: 80 },
-  { x: 310, y: 490, w: 20, h: 80 },
+export const blocks = [
+  // baris 1
+  { x:70,  y:160, w:60,  h:70 },
+  { x:150, y:160, w:80,  h:70 },
+  { x:250, y:160, w:60,  h:70 },
+  // baris 2
+  { x:70,  y:250, w:60,  h:100 },
+  { x:150, y:250, w:80,  h:100 },
+  { x:250, y:250, w:60,  h:100 },
+  { x:330, y:250, w:55,  h:100 },
+  // baris 3
+  { x:70,  y:370, w:60,  h:100 },
+  { x:150, y:370, w:80,  h:100 },
+  { x:250, y:370, w:60,  h:100 },
+  { x:330, y:370, w:55,  h:100 },
+  // baris 4
+  { x:70,  y:490, w:60,  h:80 },
+  { x:150, y:490, w:80,  h:80 },
+  { x:250, y:490, w:60,  h:80 },
+  { x:330, y:490, w:55,  h:80 },
 ];
