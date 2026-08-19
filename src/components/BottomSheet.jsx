@@ -180,7 +180,7 @@ export default function BottomSheet({ phase, progress, onStart, onCancel, onAcce
       <h1>Kirim cintamu sekarang</h1>
       <div className="loc"><i /><div><small>Dari</small><strong>Hati Rama</strong></div></div>
       <div className="line" />
-      <div className="loc"><i className="red" /><div><small>Menuju Hati Mic</small><strong>Tempat dia berada</strong></div></div>
+      <div className="loc"><i className="red" /><div><small>Tujuan</small><strong>Hati Mic</strong></div></div>
       <div className="fare"><span>Biaya perjalanan</span><b>[PROMO] 1 Kiss Only</b></div>
       <button onClick={onStart}>Cari cinta</button>
     </section>
