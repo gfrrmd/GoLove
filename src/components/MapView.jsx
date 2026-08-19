@@ -27,9 +27,9 @@ const makeIcon = (bg, emoji, label) => L.divIcon({
   </div>`,
 });
 
-const iconDriver = makeIcon('#00b14f', '\u2665', 'Cintaku');
-const iconSearch = makeIcon('#f59e0b', '\u2665', 'Mencari...');
-const iconDest   = makeIcon('#e5484d', '\u2665', 'Kamu');
+const iconDriver = makeIcon('#00b14f', '🤍', 'Cintaku');
+const iconSearch = makeIcon('#f59e0b', '🔍', 'Mencari...');
+const iconDest   = makeIcon('#e5484d', '🤍', 'Kamu');
 
 function MovingMarker({ pos, searching }) {
   const ref = useRef(null);
