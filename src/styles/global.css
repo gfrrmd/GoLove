@@ -51,7 +51,25 @@ button { font: inherit; }
 
 /* POST REWARD SCREENS */
 .pr-screen { position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center; padding: 24px; }
-.pr-dark { background: #0d1117; }
+.pr-light { background: #f3f8f4; }
+.pr-dark  { background: #0d1117; }
+
+/* Card terang (Salah Kirim) */
+.pr-card-light { background: #fff; border: 1px solid #d1f0df; border-radius: 20px; padding: 32px 24px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 8px 32px #00a94f18; animation: pop .4s ease-out; }
+.pr-card-light.shake { animation: shake .5s ease-out; }
+.pr-tag-light { font-size: 10px; font-weight: 900; letter-spacing: .15em; color: #f59e0b; text-transform: uppercase; margin-bottom: 8px; }
+.pr-title-light { font-size: 22px; font-weight: 900; color: #17221c; margin: 0 0 10px; }
+.pr-sub-light { font-size: 14px; color: #556b5e; line-height: 1.6; margin: 0 0 20px; }
+.pr-btn-light { width: 100%; padding: 13px; border: 0; border-radius: 12px; background: #00a94f; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 0; }
+
+/* Twist chat */
+.twist-chat { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px #00a94f18; animation: pop .35s ease-out; }
+.twist-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px 12px; border-bottom: 1px solid #edf0ed; }
+.twist-header strong { display: block; font-size: 15px; color: #17221c; }
+.twist-header small  { color: #7b877f; font-size: 11px; }
+.twist-bubbles { display: flex; flex-direction: column; gap: 10px; padding: 14px 20px 20px; min-height: 120px; }
+
+/* Card gelap */
 .pr-card { background: #161b22; border: 1px solid #30363d; border-radius: 20px; padding: 32px 24px; max-width: 360px; width: 100%; text-align: center; animation: pop .4s ease-out; }
 .pr-card.shake { animation: shake .5s ease-out; }
 .pr-icon { font-size: 42px; margin-bottom: 12px; }
