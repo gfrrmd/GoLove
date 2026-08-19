@@ -203,7 +203,7 @@ function MakeAWish({ onDone }) {
           <div className="wish-reveal">
             <div className="wish-star-icon big">💚</div>
             <h2 className="pr-title light">Permintaanmu...</h2>
-            <p className="pr-sub light">sudah aku dengar duluan. 💚</p>
+            <p className="pr-sub light">sudah didengar duluan. 💚</p>
           </div>
         )}
       </div>
